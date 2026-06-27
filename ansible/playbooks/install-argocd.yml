@@ -1,0 +1,34 @@
+---
+- name: Instalar e configurar ArgoCD
+  hosts: control_plane
+  become: true
+  tasks:
+    - name: Criar namespace argocd
+      shell: kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+      changed_when: false
+
+    - name: Instalar ArgoCD
+      shell: kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+      args:
+        creates: /usr/local/bin/argocd
+
+    - name: Aguardar pods do ArgoCD
+      shell: kubectl wait --namespace argocd --for=condition=Ready pods --all --timeout=180s
+      changed_when: false
+
+    - name: Expor ArgoCD via NodePort
+      shell: kubectl patch svc argocd-server -n argocd -p '{"spec":{"type":"NodePort"}}'
+      changed_when: false
+
+    - name: Obter porta do NodePort
+      shell: kubectl get svc argocd-server -n argocd -o jsonpath='{.spec.ports[0].nodePort}'
+      register: argocd_port
+      changed_when: false
+
+    - name: Exibir dados de acesso
+      debug:
+        msg:
+          - "ArgoCD instalado com sucesso"
+          - "URL: https://{{ ansible_host }}:{{ argocd_port.stdout }}"
+          - "Usuario: admin"
+          - "Senha: kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d"

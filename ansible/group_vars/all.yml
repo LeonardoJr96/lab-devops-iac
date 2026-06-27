@@ -1,0 +1,11 @@
+---
+common_packages:
+   - curl
+   - vim
+   - htop
+   - net-tools
+   - ca-certificates
+   - apt-transport-https
+
+admin_user: devops
+admin_pubkey: "ssh-ed25519 AAAA...substitua-pela-chave-publica"
