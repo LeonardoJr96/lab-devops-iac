@@ -1,11 +1,11 @@
 ---
 common_packages:
-   - curl
-   - vim
-   - htop
-   - net-tools
-   - ca-certificates
-   - apt-transport-https
+  - curl
+  - vim
+  - htop
+  - net-tools
+  - ca-certificates
+  - apt-transport-https
 
 admin_user: devops
-admin_pubkey: "ssh-ed25519 AAAA...substitua-pela-chave-publica"
+admin_pubkey: "ssh-ed25519 AAAAB3NzaC1yc2EAAAADAQABAAABAQDMfDPNE8APdksLFI1zfXt2TR8HNsYoBaNxr3i+TxbzLAoZCS4Bb3AKrpNGez0XQd9PusZbAIexkl7kkZ3vMaNdvVkMS2EAE2cqD2nD8bhtsxDeKRuLjKNc5HX5blJpr2vH7sIb3I3k9hGr3QFq4bD0quOb8JnKXOGjRzpRe6Qyu/adNNpLi2VT2520UasAntkUgfyE7cmwDABWk4JDoPEAkDHi9URdz3rEAD9OXzZa26WVzzZI0LfPpyeKC/97DD5+vJ0gqC+HiKj89peOIslKytSPsZG8ezo61fwOFmg6vXaW7sLyyUEPckfzV1hLuvxQu+w2lxYjtgDFxnJDw2vV"

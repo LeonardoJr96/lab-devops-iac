@@ -1,23 +1,23 @@
 output "public_ips" {
-   description = "IPs públicos das instâncias"
-   value = {
-      for name, instance in aws_instance.nodes :
-      name => instance.public_ip
-   }
+  description = "IPs publicos das instancias"
+  value = {
+    for name, instance in aws_instance.nodes :
+    name => instance.public_ip
+  }
 }
 
 output "private_ips" {
-   description = "IPs privados das instâncias"
-   value = {
-      for name, instance in aws_instance.nodes :
-      name => instance.private_ip
-   }
+  description = "IPs privados das instancias"
+  value = {
+    for name, instance in aws_instance.nodes :
+    name => instance.private_ip
+  }
 }
 
 output "instance_ids" {
-   description = "IDs das instâncias"
-   value = {
-      for name, instance in aws_instance.nodes :
-      name => instance.id
-   }
+  description = "IDs das instancias"
+  value = {
+    for name, instance in aws_instance.nodes :
+    name => instance.id
+  }
 }

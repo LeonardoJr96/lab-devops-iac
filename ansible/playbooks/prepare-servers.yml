@@ -1,60 +1,66 @@
 ---
-- name: Preparar servidores para futura instalação do Kubernetes
-   hosts: k8s_nodes
-   become: true
-   tasks:
-      - name: Atualizar cache do APT
-         ansible.builtin.apt:
-            update_cache: true
-            cache_valid_time: 3600
+- name: Preparar servidores para futura instalacao do Kubernetes
+  hosts: k8s_nodes
+  become: true
+  tasks:
+    - name: Atualizar cache do APT
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
 
-      - name: Instalar pacotes básicos
-         ansible.builtin.apt:
-            name: "{{ common_packages }}"
-            state: present
+    - name: Instalar pacotes basicos
+      ansible.builtin.apt:
+        name:
+          - curl
+          - vim
+          - htop
+          - net-tools
+          - ca-certificates
+          - apt-transport-https
+        state: present
 
-      - name: Criar usuário administrativo
-         ansible.builtin.user:
-            name: "{{ admin_user }}"
-            groups: sudo
-            append: true
-            shell: /bin/bash
-            create_home: true
+    - name: Criar usuario administrativo
+      ansible.builtin.user:
+        name: "devops"
+        groups: sudo
+        append: true
+        shell: /bin/bash
+        create_home: true
 
-      - name: Criar diretório .ssh do usuário administrativo
-         ansible.builtin.file:
-            path: "/home/{{ admin_user }}/.ssh"
-            state: directory
-            owner: "{{ admin_user }}"
-            group: "{{ admin_user }}"
-            mode: "0700"
+    - name: Criar diretorio .ssh do usuario administrativo
+      ansible.builtin.file:
+        path: "/home/devops/.ssh"
+        state: directory
+        owner: "devops"
+        group: "devops"
+        mode: "0700"
 
-      - name: Configurar authorized_keys do usuário administrativo
-         ansible.builtin.copy:
-            content: "{{ admin_pubkey }}\n"
-            dest: "/home/{{ admin_user }}/.ssh/authorized_keys"
-            owner: "{{ admin_user }}"
-            group: "{{ admin_user }}"
-            mode: "0600"
+    - name: Configurar authorized_keys do usuario administrativo
+      ansible.builtin.copy:
+        content: "ssh-ed25519 AAAAB3NzaC1yc2EAAAADAQABAAABAQDMfDPNE8APdksLFI1zfXt2TR8HNsYoBaNxr3i+TxbzLAoZCS4Bb3AKrpNGez0XQd9PusZbAIexkl7kkZ3vMaNdvVkMS2EAE2cqD2nD8bhtsxDeKRuLjKNc5HX5blJpr2vH7sIb3I3k9hGr3QFq4bD0quOb8JnKXOGjRzpRe6Qyu/adNNpLi2VT2520UasAntkUgfyE7cmwDABWk4JDoPEAkDHi9URdz3rEAD9OXzZa26WVzzZI0LfPpyeKC/97DD5+vJ0gqC+HiKj89peOIslKytSPsZG8ezo61fwOFmg6vXaW7sLyyUEPckfzV1hLuvxQu+w2lxYjtgDFxnJDw2vV\n"
+        dest: "/home/devops/.ssh/authorized_keys"
+        owner: "devops"
+        group: "devops"
+        mode: "0600"
 
-      - name: Desativar autenticação SSH por senha
-         ansible.builtin.lineinfile:
-            path: /etc/ssh/sshd_config
-            regexp: '^#?PasswordAuthentication'
-            line: 'PasswordAuthentication no'
-            state: present
-         notify: Reiniciar SSH
+    - name: Desativar autenticacao SSH por senha
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        state: present
+      notify: Reiniciar SSH
 
-      - name: Desativar login SSH de root
-         ansible.builtin.lineinfile:
-            path: /etc/ssh/sshd_config
-            regexp: '^#?PermitRootLogin'
-            line: 'PermitRootLogin no'
-            state: present
-         notify: Reiniciar SSH
+    - name: Desativar login SSH de root
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+      notify: Reiniciar SSH
 
-   handlers:
-      - name: Reiniciar SSH
-         ansible.builtin.service:
-            name: ssh
-            state: restarted
+  handlers:
+    - name: Reiniciar SSH
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
